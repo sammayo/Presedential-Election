@@ -6,7 +6,6 @@ contract PresedentialElection {
     uint public electionEnd;
     mapping (address => uint) public votes;
     address public winner;
-    uint public winnerVotes;
     HumanStandardToken public citizenshipToken;
     
     function PresedentialElection(uint lengthOfElectionInSeconds, uint numberOfCitizens) {
@@ -30,13 +29,8 @@ contract PresedentialElection {
         
         votes[candidate]++;
         
-        if(candidate==winner) {
-            winnerVotes++;
-        }
-        
-        if(votes[candidate]>winnerVotes) {
+        if(votes[candidate]>votes[winner]) {
             winner = candidate;
-            winnerVotes = votes[candidate];
         }
         
         citizenshipToken.transferFrom(msg.sender, citizenshipToken, 1);

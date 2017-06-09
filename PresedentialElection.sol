@@ -4,9 +4,9 @@ import "./HumanStandardToken.sol";
 contract PresedentialElection {
     address public owner;
     uint public electionEnd;
-    address[] public candidates;
     mapping (address => uint) public votes;
     address public winner;
+    uint public winnerVotes;
     HumanStandardToken public citizenshipToken;
     
     function PresedentialElection(uint lengthOfElectionInSeconds, uint numberOfCitizens) {
@@ -28,24 +28,18 @@ contract PresedentialElection {
         require(now<electionEnd);
         require(citizenshipToken.balanceOf(msg.sender)>=1);
         
-        candidates.push(candidate);
         votes[candidate]++;
         
-        citizenshipToken.transferFrom(msg.sender, citizenshipToken, 1);
-    }
-    
-    function checkWinner() returns (address) {
-        //require(now>=electionEnd);
-        
-        uint mostVotes = 0;
-        for(uint i=0;i<candidates.length;i++) {
-            address c = candidates[i];
-            if(votes[c]>mostVotes) {
-                winner = c;
-            }
+        if(candidate==winner) {
+            winnerVotes++;
         }
         
-        return c;
+        if(votes[candidate]>winnerVotes) {
+            winner = candidate;
+            winnerVotes = votes[candidate];
+        }
+        
+        citizenshipToken.transferFrom(msg.sender, citizenshipToken, 1);
     }
     
     function() {}

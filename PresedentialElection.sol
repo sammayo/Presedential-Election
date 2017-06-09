@@ -19,7 +19,6 @@ contract PresedentialElection {
     function giveCitizenship(address to) {
         require(msg.sender==owner);
         require(citizenshipToken.balanceOf(to)==0);
-        require(citizenshipToken.allowance(to,this)>=1);
         
         citizenshipToken.transfer(to, 1);
     }
@@ -27,6 +26,7 @@ contract PresedentialElection {
     function vote(address candidate) {
         require(now<electionEnd);
         require(citizenshipToken.balanceOf(msg.sender)>=1);
+        require(citizenshipToken.allowance(msg.sender,this)>=1);
         
         votes[candidate]++;
         
